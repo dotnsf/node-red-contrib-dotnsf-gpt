@@ -1,0 +1,51 @@
+<script type="text/javascript">
+  RED.nodes.registerType( 'GPT', {
+    category: 'function',
+    color: '#AAAA66',
+    defaults: {
+      name: { value: '' },
+      apikey: { value: '' },
+      verb: { value: 'completions' },
+      prompt: { value: '' },
+      model: { value: 'text-davinci-003' },
+      max_tokens: { value: 4000 },
+      ignore_phrase: { value: 10 }
+    },
+    inputs: 1,
+    outputs: 1,
+    icon: "font-awesome/fa-graduation-cap",
+    label: function(){
+      return this.name || "GPT";
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="GPT 3.5">
+  <div class="form-row">
+    <label for="node-input-name"><i class="icon-tag"></i> Name</label>
+    <input type="text" id="node-input-name" placeholder="Name"/>
+    <br/>
+    <label for="node-input-apikey"><i class="icon-tag"></i> API Key</label>
+    <input type="text" id="node-input-apikey" placeholder="API Key"/>
+    <br/>
+    <label for="node-input-verb"><i class="icon-tag"></i> Verb</label>
+    <input type="text" id="node-input-verb" placeholder="Verb('ex. completions')"/>
+    <br/>
+    <label for="node-input-prompt"><i class="icon-tag"></i> Prompt</label>
+    <input type="text" id="node-input-prompt" placeholder="Prompt"/>
+    <br/>
+    <label for="node-input-model"><i class="icon-tag"></i> Model</label>
+    <input type="text" id="node-input-model" placeholder="Model('ex. text-davinci-003')"/>
+    <br/>
+    <label for="node-input-max_tokens"><i class="icon-tag"></i> Max Tokens</label>
+    <input type="text" id="node-input-max_tokens" placeholder="Max Tokens('ex. 4000')"/>
+    <br/>
+    <label for="node-input-ignore_phrase"><i class="icon-tag"></i> Ignore Phrase</label>
+    <input type="text" id="node-input-ignore_phrase" placeholder="Ignore Phrase('ex. 10')"/>
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="GPT">
+  <p>GPT(3.5) based query node.</p>
+  <p>You need to edit "API Key" field with your own API Key, which can be generated <a target="_blank" href="https://beta.openai.com/account/api-keys">here</a>.</p>
+</script>
