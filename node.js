@@ -5,11 +5,11 @@ module.exports = function( RED ){
     RED.nodes.createNode( this, config );
     var node = this;
     node.on( 'input', function( msg ){
-      node.status( { fill: "green", shape: "dot", text: "..." } );
+      node.status( { fill: "green", shape: "dot", text: "問い合わせ中..." } );
 
       var IGNORE_PHRASE = 10;  //. 結果の最初のフレーズがこの長さ以下だったら無視する
 
-      var headers = { 'Content-Type': 'application/json' };
+      //var headers = { 'Content-Type': 'application/json' };
       var verb = config.verb;                         // 'completions'
       var prompt = config.prompt;
       var model = config.model;                       // 'text-davinci-003'
@@ -23,7 +23,7 @@ module.exports = function( RED ){
         if( payload.prompt ){ prompt = payload.prompt; }
         if( payload.model ){ model = payload.model; }
         if( payload.max_tokens ){ model = payload.max_tokens; }
-        if( payload.apykey ){ apykey = payload.apykey; }
+        if( payload.apikey ){ apikey = payload.apikey; }
 
         if( payload.ignore_phrase ){ IGNORE_PHRASE = ( typeof payload.ignore_phrase == 'text' ? parseInt( payload.ignore_phrase ) : payload.ignore_phrase ); }
       }
@@ -33,12 +33,14 @@ module.exports = function( RED ){
         model: model,
         max_tokens: max_tokens
       };
-      headers['Authorization'] = 'Bearer ' + apikey;
+      var headers = {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + apikey
+      };
 
-      //console.log( {apikey} );
       if( apikey ){
-        if( text ){
-          axios.post( 'https://api.openai.com/v1/' + verb, option, headers ).then( function( result ){
+        if( prompt ){
+          axios.post( 'https://api.openai.com/v1/' + verb, option, { headers: headers } ).then( function( result ){
             if( result.data && result.data.choices && result.data.choices.length > 0 ){
               var answer = result.data.choices[0].text;
 
@@ -56,9 +58,13 @@ module.exports = function( RED ){
               node.status( {} );
               node.send( msg );
             }
+          }).catch( function( err ){
+            msg.payload = JSON.stringify( err );
+            node.status( {} );
+            node.send( msg );
           });
         }else{
-          msg.payload = 'Query text is missing.';
+          msg.payload = 'Query prompt is missing.';
           node.status( {} );
           node.send( msg );
         }
